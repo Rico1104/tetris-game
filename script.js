@@ -43,11 +43,11 @@ let gameOver = false;
 let piece = null;
 let nextPiece = null;
 
-// 添加触摸控制
+// 修改触摸控制
 let touchStartX = 0;
 let touchStartY = 0;
-let touchEndX = 0;
-let touchEndY = 0;
+let touchStartTime = 0;
+let isSwiping = false;
 
 class Piece {
     constructor(shape = Math.floor(Math.random() * SHAPES.length)) {
@@ -304,78 +304,82 @@ document.addEventListener('keydown', event => {
     }
 });
 
-// 添加触摸控制
-document.addEventListener('touchstart', function(event) {
+// 修改触摸控制
+document.getElementById('tetris').addEventListener('touchstart', function(event) {
     if (gameOver || paused) return;
+    
     touchStartX = event.touches[0].clientX;
     touchStartY = event.touches[0].clientY;
-}, false);
+    touchStartTime = Date.now();
+    isSwiping = false;
+}, { passive: true });
 
-document.addEventListener('touchmove', function(event) {
-    event.preventDefault();
+document.getElementById('tetris').addEventListener('touchmove', function(event) {
+    if (gameOver || paused || !touchStartX) return;
+    
+    const touchX = event.touches[0].clientX;
+    const touchY = event.touches[0].clientY;
+    const deltaX = touchX - touchStartX;
+    const deltaY = touchY - touchStartY;
+    const minSwipe = 30;
+
+    // 如果移动距离足够大，标记为滑动
+    if (Math.abs(deltaX) > minSwipe || Math.abs(deltaY) > minSwipe) {
+        isSwiping = true;
+    }
+
+    // 防止页面滚动
+    if (isSwiping) {
+        event.preventDefault();
+    }
 }, { passive: false });
 
-document.addEventListener('touchend', function(event) {
-    if (gameOver || paused) return;
-    touchEndX = event.changedTouches[0].clientX;
-    touchEndY = event.changedTouches[0].clientY;
+document.getElementById('tetris').addEventListener('touchend', function(event) {
+    if (gameOver || paused || !touchStartX) return;
     
+    const touchEndX = event.changedTouches[0].clientX;
+    const touchEndY = event.changedTouches[0].clientY;
     const deltaX = touchEndX - touchStartX;
     const deltaY = touchEndY - touchStartY;
-    const minSwipe = 30; // 最小滑动距离
-    
-    // 水平滑动
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipe) {
-        if (deltaX > 0) {
-            move(1); // 右移
-        } else {
-            move(-1); // 左移
+    const deltaTime = Date.now() - touchStartTime;
+    const minSwipe = 30;
+    const maxTime = 300; // 最大滑动时间（毫秒）
+
+    // 只处理快速滑动
+    if (deltaTime <= maxTime) {
+        // 水平滑动
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipe) {
+            if (deltaX > 0) {
+                move(1); // 右移
+            } else {
+                move(-1); // 左移
+            }
+        }
+        // 垂直滑动
+        else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > minSwipe) {
+            if (deltaY > 0) {
+                hardDrop(); // 下滑快速下落
+            } else {
+                piece.rotate(); // 上滑旋转
+            }
+        }
+        // 轻点（没有明显的滑动）
+        else if (Math.abs(deltaX) < minSwipe && Math.abs(deltaY) < minSwipe && !isSwiping) {
+            softDrop(); // 轻点屏幕软下落
         }
     }
-    // 垂直滑动
-    else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > minSwipe) {
-        if (deltaY > 0) {
-            hardDrop(); // 下滑快速下落
-        } else {
-            piece.rotate(); // 上滑旋转
-        }
-    }
-    // 轻点屏幕
-    else if (Math.abs(deltaX) < minSwipe && Math.abs(deltaY) < minSwipe) {
-        softDrop(); // 轻点屏幕软下落
-    }
-}, false);
 
-// 添加虚拟按钮控制
-document.querySelector('.control-btn.left').addEventListener('click', () => {
-    if (!gameOver && !paused) {
-        move(-1);
-    }
-});
-
-document.querySelector('.control-btn.right').addEventListener('click', () => {
-    if (!gameOver && !paused) {
-        move(1);
-    }
-});
-
-document.querySelector('.control-btn.rotate').addEventListener('click', () => {
-    if (!gameOver && !paused) {
-        piece.rotate();
-    }
-});
-
-document.querySelector('.control-btn.down').addEventListener('click', () => {
-    if (!gameOver && !paused) {
-        hardDrop();
-    }
-});
+    // 重置触摸状态
+    touchStartX = 0;
+    touchStartY = 0;
+    isSwiping = false;
+}, { passive: true });
 
 // 防止虚拟按钮触发默认的触摸行为
 document.querySelectorAll('.control-btn').forEach(btn => {
     btn.addEventListener('touchstart', (e) => {
         e.preventDefault();
-    });
+    }, { passive: false });
 });
 
 startBtn.addEventListener('click', startGame);

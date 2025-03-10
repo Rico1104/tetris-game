@@ -4,6 +4,8 @@ body {
     background-color: #f0f0f0;
     font-family: Arial, sans-serif;
     min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .page-container {
@@ -11,6 +13,7 @@ body {
     padding: 20px;
     margin: 0 auto;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .game-title {
@@ -53,6 +56,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     max-width: 100%;
     height: auto;
+    touch-action: none;
 }
 
 .game-info, .next-piece {
@@ -211,6 +215,15 @@ button:hover {
         margin: 10px 0;
     }
 
+    .game-container {
+        padding-bottom: 30px;
+    }
+
+    .controls-container {
+        margin-top: 10px;
+        padding: 10px;
+    }
+
     .game-sidebar {
         flex-direction: row;
         padding: 0 10px;
@@ -221,11 +234,16 @@ button:hover {
     }
 
     .virtual-controls {
-        margin: 10px auto;
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
     }
 
     .control-btn {
-        padding: 12px;
+        padding: 15px;
         font-size: 20px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
     }
 } 
