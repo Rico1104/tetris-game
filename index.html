@@ -10,42 +10,44 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 class="game-title">Rico's Game</h1>
-    <div class="game-container">
-        <div class="game-main">
-            <canvas id="tetris" width="300" height="600"></canvas>
-            <div class="game-controls">
-                <div class="button-group">
+    <div class="page-container">
+        <h1 class="game-title">Rico's Game</h1>
+        <div class="game-container">
+            <div class="game-main">
+                <canvas id="tetris" width="300" height="600"></canvas>
+                <div class="game-sidebar">
+                    <div class="game-info">
+                        <div class="score">分数: <span id="score">0</span></div>
+                        <div class="level">等级: <span id="level">1</span></div>
+                    </div>
+                    <div class="next-piece">
+                        <h3>下一个方块</h3>
+                        <canvas id="next" width="100" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="controls-container">
+                <div class="game-buttons">
                     <button id="start-btn">开始游戏</button>
                     <button id="pause-btn">暂停</button>
                 </div>
+                <div class="virtual-controls">
+                    <button class="control-btn left">←</button>
+                    <button class="control-btn rotate">↑</button>
+                    <button class="control-btn right">→</button>
+                    <button class="control-btn down">↓</button>
+                </div>
+                <div class="controls">
+                    <p>控制说明:</p>
+                    <ul>
+                        <li>← → : 左右滑动</li>
+                        <li>↑ : 上滑旋转</li>
+                        <li>点击 : 加速下落</li>
+                        <li>↓ : 下滑直接落下</li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="game-sidebar">
-            <div class="game-info">
-                <div class="score">分数: <span id="score">0</span></div>
-                <div class="level">等级: <span id="level">1</span></div>
-            </div>
-            <div class="next-piece">
-                <h3>下一个方块</h3>
-                <canvas id="next" width="100" height="100"></canvas>
-            </div>
-            <div class="controls">
-                <p>控制说明:</p>
-                <ul>
-                    <li>← → : 左右滑动</li>
-                    <li>↑ : 上滑旋转</li>
-                    <li>点击 : 加速下落</li>
-                    <li>↓ : 下滑直接落下</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="virtual-controls">
-        <button class="control-btn left">←</button>
-        <button class="control-btn rotate">↑</button>
-        <button class="control-btn right">→</button>
-        <button class="control-btn down">↓</button>
     </div>
     <script src="script.js"></script>
 </body>
