@@ -346,5 +346,37 @@ document.addEventListener('touchend', function(event) {
     }
 }, false);
 
+// 添加虚拟按钮控制
+document.querySelector('.control-btn.left').addEventListener('click', () => {
+    if (!gameOver && !paused) {
+        move(-1);
+    }
+});
+
+document.querySelector('.control-btn.right').addEventListener('click', () => {
+    if (!gameOver && !paused) {
+        move(1);
+    }
+});
+
+document.querySelector('.control-btn.rotate').addEventListener('click', () => {
+    if (!gameOver && !paused) {
+        piece.rotate();
+    }
+});
+
+document.querySelector('.control-btn.down').addEventListener('click', () => {
+    if (!gameOver && !paused) {
+        hardDrop();
+    }
+});
+
+// 防止虚拟按钮触发默认的触摸行为
+document.querySelectorAll('.control-btn').forEach(btn => {
+    btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+    });
+});
+
 startBtn.addEventListener('click', startGame);
 pauseBtn.addEventListener('click', togglePause); 
